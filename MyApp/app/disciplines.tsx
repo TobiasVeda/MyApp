@@ -1,17 +1,15 @@
 import {Text, View, StyleSheet, Animated, Button} from "react-native";
-import {useData} from "@/context/DataProvider";
-import {Discipline, Meet} from "@/services/interface";
 import ScrollView = Animated.ScrollView;
-import {fillDisciplines, fillMeets} from "@/services/filler";
 import ListItem from "@/components/ListItem";
 import {Redirect, useNavigation} from "expo-router";
-import {useLayoutEffect} from "react";
+import {useEffect, useLayoutEffect} from "react";
+import {useData} from "@/context/DataProvider";
+import {AttendingDiscipline} from "@/services/types";
 
 
 export default function DisciplinesPage() {
     const navigation = useNavigation();
-    const { meetID, allDisciplines, loadAllDisciplines, setDisciplineID } = useData();
-    const disciplines = allDisciplines.filter((d:Discipline)=>(d.meetID === meetID));
+    const { meetID, allAttendingDisciplines, loadAllAttendingDisciplines, setAttendingDisciplineVal, disciplineRedirect } = useData();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -19,10 +17,10 @@ export default function DisciplinesPage() {
         });
     }, [navigation]);
 
-    const refresh = async ()=>{
-        await fillDisciplines(meetID);
-        await loadAllDisciplines();
-    }
+
+    useEffect(() => {
+        loadAllAttendingDisciplines();
+    }, []);
 
     if (meetID === 0) {
         return <Redirect href="/" />;
@@ -30,9 +28,8 @@ export default function DisciplinesPage() {
 
     return (
         <ScrollView>
-            <Button title={"refresh"} onPress={refresh}/>
-            {disciplines.map((d:Discipline, i:number)=>(
-                <ListItem key={i} id={d.id} title={d.name} setter={setDisciplineID} href={"/heats"}/>
+            {allAttendingDisciplines.map((d:AttendingDiscipline, i:number)=>(
+                <ListItem key={i} id={d.val} title={d.name} setter={setAttendingDisciplineVal} href={disciplineRedirect}/>
             ))}
         </ScrollView>
     );

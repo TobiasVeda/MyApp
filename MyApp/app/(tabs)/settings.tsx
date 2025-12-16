@@ -1,6 +1,6 @@
 import {Button, Text, View} from "react-native";
-import {scrapeDisciplineList} from "@/services/scraper";
-import {fillDisciplines, fillHeats, fillMeets} from "@/services/filler";
+import {scrapeDisciplineList} from "@/services/legacy/scraper";
+import {fillDisciplines, fillHeats, fillMeets} from "@/services/legacy/filler";
 
 
 export default function Index() {

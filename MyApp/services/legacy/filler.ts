@@ -5,7 +5,7 @@ import {
     scrapeMeetDetails,
     scrapeMeetList, scrapeResultList,
     scrapeSchedule, scrapeSwimmers
-} from "@/services/scraper";
+} from "@/services/legacy/scraper";
 import {
     setAttendingClubsToDB, setAttendingSwimmersToDB,
     setClubsToDB,
@@ -14,8 +14,8 @@ import {
     setMeetDetailsToDB,
     setMeetsToDB, setResultsToDB,
     setSchedulesToDB, setSwimmersToDB
-} from "@/services/database";
-import {setAttendingSwimmersToStorage} from "@/services/asyncStorage";
+} from "@/services/legacy/database";
+import {setAttendingSwimmersToStorage} from "@/services/legacy/asyncStorage";
 import {
     AttendingClubs,
     AttendingSwimmers,
@@ -27,7 +27,7 @@ import {
     Schedule,
     Swimmer,
     Result
-} from "@/services/interface";
+} from "@/services/legacy/interface";
 
 
 export async function fillMeets():Promise<Meet[]>{

@@ -1,11 +1,23 @@
 import {Text, View, StyleSheet, Animated, Button, TextInput} from "react-native";
-import {useData} from "@/context/DataProvider";
+
 import {useEffect, useLayoutEffect, useState} from "react";
-import {Meet} from "@/services/interface";
-import {completeFillOfMeet, fillMeets, fillResults} from "@/services/filler";
 import ScrollView = Animated.ScrollView;
 import ListItem from "@/components/ListItem";
 import {useNavigation} from "expo-router";
+import {fillHeats, fillMeet, fillMeetList, fillSchedule} from "@/services/scrape/filler";
+import {useData} from "@/context/DataProvider";
+import {Meet} from "@/services/types";
+import {createDB, dropDB, hardResetDB} from "@/services/database/SQLDatabase";
+import {
+    scrapeClubs,
+    scrapeFinals,
+    scrapeHeats,
+    scrapeMeetDetails,
+    scrapeMeetOptions,
+    scrapeResults, scrapeSchedule,
+    scrapeStartLists
+} from "@/services/scrape/scraper";
+
 
 
 export default function Index() {
@@ -13,13 +25,9 @@ export default function Index() {
     const [search, setSearch] = useState("");
     const { allMeets, loadAllMeets, loadAll, setMeetID } = useData();
     let meets:Meet[] = allMeets;
-    meets = meets.filter((m:Meet)=>(m.name.toLowerCase().includes(search.toLowerCase())));
+    meets = meets.filter((m:Meet)=>(m.meetName.toLowerCase().includes(search.toLowerCase())));
     meets.sort((a, b)=>{return b.dateFrom.localeCompare(a.dateFrom)});
 
-
-    const msg = (msg:string)=>{
-        console.log(msg);
-    }
 
     const subtitle = (from:string, to:string, loc:string)=>{
         const f = new Date(from);
@@ -29,12 +37,17 @@ export default function Index() {
         } else {
             return f.toLocaleDateString() + " - " + t.toLocaleDateString() + " " + loc;
         }
+        // return from + " - " + to + " " + loc;
     }
 
     const refresh = async ()=>{
-        // await fillMeets();
+        // await hardResetDB();
+        // await dropDB();
+        // await createDB();
+        // await fillMeetList(2025);
         // await loadAllMeets();
-        console.log(await fillResults("5265-3"));
+        fillSchedule(5253)
+
     }
 
     useEffect(() => {
@@ -51,8 +64,8 @@ export default function Index() {
                     placeholderTextColor={"gray"}
                 />
                 <Button title={"refresh"} onPress={refresh}/>
-                {meets.map((meet:Meet, i:number)=>(
-                    <ListItem key={"meet"+i} id={meet.id} title={meet.name} subtitle={subtitle(meet.dateFrom, meet.dateTo, meet.location)} setter={setMeetID} href={"/meet"}/>
+                {meets.map((m:Meet, i:number)=>(
+                    <ListItem key={"meet"+i} id={m.meetID} title={m.meetName} subtitle={subtitle(m.dateFrom, m.dateTo, m.location)} setter={setMeetID} href={"/meet"}/>
 
                 ))}
 

@@ -1,29 +1,31 @@
 import {Text, View, StyleSheet, Animated, Button} from "react-native";
 import ScrollView = Animated.ScrollView;
-import {useData} from "@/context/DataProvider";
-import { Meet, MeetDetails} from "@/services/interface";
 import ListItem from "@/components/ListItem";
-import {fillMeetDetails} from "@/services/filler";
 import {Redirect, router, useNavigation, useRouter} from "expo-router";
-import {useEffect, useLayoutEffect, useRef} from "react";
+import {useEffect, useLayoutEffect, useRef, useState} from "react";
+import {useData} from "@/context/DataProvider";
+import {Meet} from "@/services/types";
+import {fillMeet} from "@/services/scrape/filler";
 
 
 export default function MeetPage() {
     const navigation = useNavigation();
-    const { meetID, allMeets, allMeetDetails, loadAllMeetDetails } = useData();
-    const details:MeetDetails = allMeetDetails.filter((m:MeetDetails)=>(m.id === meetID))[0];
-    const thisMeet:Meet = allMeets.find((m:Meet)=>(m.id === meetID));
+    const { meetID, allMeets, loadAllMeets, disciplineRedirect, setDisciplineRedirect } = useData();
+    const thisMeet:Meet = allMeets.find((m:Meet)=>(m.meetID === meetID));
+    const [loading, setLoading] = useState("");
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            title: thisMeet?.name,
-            // headerRight: ()=>( ),
+            title: thisMeet?.meetName,
+            headerRight: ()=>{return (<Text>{loading}</Text>);}
         });
-    }, [navigation, thisMeet]);
+    }, [navigation, thisMeet, loading]);
 
     const refresh = async ()=>{
-        await fillMeetDetails(meetID);
-        await loadAllMeetDetails();
+        setLoading("Laster...")
+        await fillMeet(meetID);
+        await loadAllMeets();
+        setLoading("Lastet");
     }
 
     const doNothing = ()=>{};
@@ -35,13 +37,13 @@ export default function MeetPage() {
     return (
         <ScrollView>
             <Button title={"refresh"} onPress={refresh}/>
-            {details?.startLists && <ListItem id={0} title={"Startlister"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
-            {details?.heatLists && <ListItem id={0} title={"Heatlister"} setter={doNothing} href={"/disciplines"}/>}
-            {details?.results && <ListItem id={0} title={"Resultater"} setter={doNothing} href={"/resultDisciplines"}/>}
-            {details?.finals && <ListItem id={0} title={"Finalelister"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
-            {details?.schedule && <ListItem id={0} title={"Tidsskjema"} setter={doNothing} href={"/schedule"}/>}
-            {details?.clubs && <ListItem id={0} title={"Klubber & Personer"} setter={doNothing} href={"/clubs"}/>}
-            {details?.livetiming && <ListItem id={0} title={"Livetiming"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
+            {thisMeet.hasStartlists && <ListItem id={0} title={"Startlister"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
+            {thisMeet.hasHeatlists && <ListItem id={"/heats"} title={"Heatlister"} setter={setDisciplineRedirect} href={"/disciplines"}/>}
+            {thisMeet.hasResults && <ListItem id={"/results"} title={"Resultater"} setter={setDisciplineRedirect} href={"/disciplines"}/>}
+            {thisMeet.hasFinals && <ListItem id={0} title={"Finalelister"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
+            {thisMeet.hasSchedule && <ListItem id={0} title={"Tidsskjema"} setter={doNothing} href={"/schedule"}/>}
+            {thisMeet.hasClubs && <ListItem id={0} title={"Klubber & Personer"} setter={doNothing} href={"/clubs"}/>}
+            {thisMeet.hasLivetiming && <ListItem id={0} title={"Livetiming"} subtitle={"(Not Functional)"} setter={doNothing} href={"/meet"}/>}
         </ScrollView>
     );
 }

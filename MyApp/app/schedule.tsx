@@ -1,9 +1,9 @@
 import {Text, View, StyleSheet, Animated, Button} from "react-native";
-import {useData} from "@/context/DataProvider";
-import {Discipline, Meet, Schedule} from "@/services/interface";
+import {useData} from "@/context/legacy/DataProvider";
+import {Discipline, Meet, Schedule} from "@/services/legacy/interface";
 import ScrollView = Animated.ScrollView;
 import ListItem from "@/components/ListItem";
-import {fillSchedules} from "@/services/filler";
+import {fillSchedules} from "@/services/legacy/filler";
 import {Redirect, useNavigation} from "expo-router";
 import {useLayoutEffect} from "react";
 

@@ -1,8 +1,8 @@
 import {Text, View, StyleSheet, Animated, Button} from "react-native";
-import {useData} from "@/context/DataProvider";
-import {AttendingClubs, Club, Discipline, Meet} from "@/services/interface";
+import {useData} from "@/context/legacy/DataProvider";
+import {AttendingClubs, Club, Discipline, Meet} from "@/services/legacy/interface";
 import ScrollView = Animated.ScrollView;
-import {fillClubs, fillDisciplines, fillMeets} from "@/services/filler";
+import {fillClubs, fillDisciplines, fillMeets} from "@/services/legacy/filler";
 import ListItem from "@/components/ListItem";
 import {Redirect, useNavigation} from "expo-router";
 import {useLayoutEffect} from "react";

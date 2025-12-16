@@ -1,13 +1,12 @@
 
-// export async function GET(request: Request) {
-// 	const a = await fetch("https://ltmobil.medley.no/");
-// 	let b = await a.text()
-// 	return Response.json({"data": b});
-// }
 
 export async function POST(request: Request) {
 	const req = await request.json();
 	const res = await fetch(req.url, req.header)
-	const text = await res.text();
+
+	const arrayBuffer = await res.arrayBuffer();
+	const decoder = new TextDecoder(req.encoding);
+	const text = decoder.decode(arrayBuffer);
+
 	return Response.json({text: text});
 }

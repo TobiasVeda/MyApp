@@ -18,7 +18,7 @@ import {
     setDisciplinesToFirestore, setHeatsToFirestore,
     setMeetDetailsToFirestore,
     setMeetsToFirestore, setSchedulesToFirestore
-} from "@/services/firestore";
+} from "@/services/legacy/firestore";
 import {
     getAllAttendingClubsFromStorage,
     getAllAttendingSwimmersFromStorage,
@@ -38,7 +38,7 @@ import {
     setMeetsToStorage, setResultsToStorage,
     setSchedulesToStorage,
     setSwimmersToStorage
-} from "@/services/asyncStorage";
+} from "@/services/legacy/asyncStorage";
 
 
 export const errorMeet:Meet = {
